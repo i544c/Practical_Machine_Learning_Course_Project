@@ -65,26 +65,27 @@ The following steps were followed in order to determine what is the best way to 
 
 **Package installation:**
 
-```{r}
+```{r install packages}
 if (!require("pacman")) install.packages("pacman")
-pacman::p_load(pacman,        # Package Manager
-               GGally,        # Extends 'ggplot2' by adding several functions to reduce the complexity
-               knitr,         # Provides tools for transforming R Markdown documents into various output formats
-               data.table,    # Offers tools for manipulating, processing, and analyzing large data sets
-               tidyverse,     # A collection of R packages for data organization and manipulation
-               gridExtra,     # Extends the functionality of 'grid' graphics
-               caret,         # Provides functions for training and evaluating machine learning models
-               gbm,           # Implements Gradient Boosting Machines for predictive modeling
-               dplyr,         # A grammar of data manipulation
-               rpart,         # Recursive Partitioning and Regression Trees
-               rpart.plot,    # Enhances the visualization of decision trees
-               rattle,        # A graphical user interface for data mining using R
-               randomForest,  # Implements random forest algorithms for classification and regression
-               corrplot,      # Visualizes correlation matrices and allows customization
-               elasticnet,    # Provides functions for fitting elastic net models
-               pgmm,          # A package for various statistical and graphical tools
-               doParallel,    # Provides a parallel backend for the %dopar% function in foreach
-               klaR           # # Provides diverse classification and visualization functions
+pacman::p_load(
+        pacman,        # Package Manager
+        GGally,        # Extends 'ggplot2' by adding several functions to reduce the complexity
+        knitr,         # Provides tools for transforming R Markdown documents into various output formats
+        data.table,    # Offers tools for manipulating, processing, and analyzing large data sets
+        tidyverse,     # A collection of R packages for data organization and manipulation
+        gridExtra,     # Extends the functionality of 'grid' graphics
+        caret,         # Provides functions for training and evaluating machine learning models
+        gbm,           # Implements Gradient Boosting Machines for predictive modeling
+        dplyr,         # A grammar of data manipulation
+        rpart,         # Recursive Partitioning and Regression Trees
+        rpart.plot,    # Enhances the visualization of decision trees
+        rattle,        # A graphical user interface for data mining using R
+        randomForest,  # Implements random forest algorithms for classification and regression
+        corrplot,      # Visualizes correlation matrices and allows customization
+        elasticnet,    # Provides functions for fitting elastic net models
+        pgmm,          # A package for various statistical and graphical tools
+        doParallel,    # Provides a parallel backend for the %dopar% function in foreach
+        klaR           # # Provides diverse classification and visualization functions
 )
 ```
 
@@ -100,7 +101,7 @@ download.file(training_data_url, destfile = "./pml-training.csv")
 pml_training_data <- read.csv("./pml-training.csv")
 
 test_data_url     <- "https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv"
-download.file(test_data_url, destfile = "./pml-testing.csv")
+download.file(test_data_url,     destfile = "./pml-testing.csv")
 pml_test_data     <- read.csv("./pml-testing.csv")
 ```
 
@@ -114,7 +115,7 @@ str(pml_training_data)
 
 # Remove all the variable with zeros, NA out of the train set
 # Here we get the indexes of the columns having at least 90% of NA or blank values
-ind_col_to_remove_train <- which(colSums(is.na(pml_training_data) | pml_training_data == "") > 0.9 * dim(pml_training_data)[1])
+ind_col_to_remove_train   <- which(colSums(is.na(pml_training_data) | pml_training_data == "") > 0.9 * dim(pml_training_data)[1])
 pml_training_data_clean   <- pml_training_data[, -ind_col_to_remove_train]
 pml_training_data_clean   <- pml_training_data_clean[, -c(1:7)]
 
@@ -122,8 +123,8 @@ dim(pml_training_data_clean)
 
 # The same protocol will be done in test data set
 index_col_to_remove_test <- which(colSums(is.na(pml_test_data) | pml_test_data == "") > 0.9 * dim(pml_test_data)[1])
-pml_test_data_clean   <- pml_test_data[, -index_col_to_remove_test]
-pml_test_data_clean   <- pml_test_data_clean[, -c(1:7)]
+pml_test_data_clean      <- pml_test_data[, -index_col_to_remove_test]
+pml_test_data_clean      <- pml_test_data_clean[, -c(1:7)]
 
 dim(pml_test_data_clean)
 ```
@@ -171,7 +172,8 @@ pml_model_rp <- train(
 )
 pml_val_rp  <- predict(pml_model_rp, newdata =pml_validation)
 pml_levels  <- levels(factor(pml_validation$classe))
-accuracy_rp <- confusionMatrix(factor(pml_val_rp, levels = pml_levels), factor(pml_validation$classe, levels = pml_levels))$overall['Accuracy']
+accuracy_rp <- confusionMatrix(factor(pml_val_rp,            levels = pml_levels),
+                               factor(pml_validation$classe, levels = pml_levels))$overall['Accuracy']
 fancyRpartPlot(pml_model_rp$finalModel)
 ```
 
@@ -187,7 +189,8 @@ pml_model_rf <- train(
         trControl  = fit_control
 )
 pml_val_rf  <- predict(pml_model_rf, newdata = pml_validation)
-accuracy_rf <- confusionMatrix(factor(pml_val_rf, levels = pml_levels), factor(pml_validation$classe, levels = pml_levels))$overall['Accuracy']
+accuracy_rf <- confusionMatrix(factor(pml_val_rf,            levels = pml_levels),
+                               factor(pml_validation$classe, levels = pml_levels))$overall['Accuracy']
 ```
 
 **Prediction with GBM (`Gradient Boosting Machine`) (`Boosting with Trees`)**
@@ -202,7 +205,8 @@ pml_model_gbm <- train(
         trControl  = fit_control
 )
 pml_val_gbm  <- predict(pml_model_gbm, newdata = pml_validation)
-accuracy_gbm <- confusionMatrix(factor(pml_val_gbm, levels = pml_levels), factor(pml_validation$classe, levels = pml_levels))$overall['Accuracy']
+accuracy_gbm <- confusionMatrix(factor(pml_val_gbm,           levels = pml_levels),
+                                factor(pml_validation$classe, levels = pml_levels))$overall['Accuracy']
 
 
 ```
@@ -225,7 +229,9 @@ accuracy_lda <- confusionMatrix(factor(pml_val_lda, levels = pml_levels), factor
 
 ### Prediction with Naive Bayes
 
-```{r nb model,echo=FALSE}
+```{r nb model, include = FALSE}
+opts_chunk$set(echo = FALSE)
+
 pml_model_nb <- train(
         classe ~ .,
         data       = pml_training,
@@ -243,8 +249,8 @@ accuracy_nb <- confusionMatrix(factor(pml_val_nb, levels = pml_levels), factor(p
 The below table summarizes the results of running 5 different techniques to predict "classe". Random Forest and Boosting with Trees offered the highest accuracy; where **`r accuracy_rf`**, **`r accuracy_gbm`** are their accuracies respectably. Trees have the highest accuracy, but it could be over fitting, therefore, it was selected Boosting with Trees to be used with test data set.
 
 ```{r results}
-results                <- matrix(c(accuracy_rp, accuracy_rf, accuracy_gbm, accuracy_lda, accuracy_nb), nrow = 5, ncol = 1)
-row.names(results)     <- c("Trees", "Random Forests", "Boosting with Trees", "Linear Discriminate Analysis", "Naive Bayes")
+results                 <- matrix(c(accuracy_rp, accuracy_rf, accuracy_gbm, accuracy_lda, accuracy_nb), nrow = 5, ncol = 1)
+row.names(results)      <- c("Trees", "Random Forests", "Boosting with Trees", "Linear Discriminate Analysis", "Naive Bayes")
 results_table           <- as.table(results)
 colnames(results_table) <- c("Accuracy")
 results_table
