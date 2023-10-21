@@ -7,7 +7,7 @@ output: html_document
 
 ## Introduction
 
-Using devices such as Jawbone Up, Nike FuelBand, and Fitbit, it is now possible to collect a large amount of data about personal activity relatively inexpensively. These types of devices are part of the quantified self movement—a group of enthusiasts who take measurements about themselves regularly to improve their health, to find patterns in their behavior, or because they are tech geeks.
+Using devices such as Jawbone Up, Nike FuelBand, and Fitbit, it is now possible to collect a large amount of data about personal activity relatively inexpensively. These types of devices are part of the quantified self-movement — a group of enthusiasts who take measurements about themselves regularly to improve their health, to find patterns in their behavior, or because they are tech geeks.
 
 One thing that people regularly do is quantify how much of a particular activity they do, but they rarely quantify how well they do it. In this project, your goal will be to use data from accelerometers on the belt, forearm, arm, and dumbbell of six participants.
 
@@ -173,7 +173,8 @@ accuracy_rp <- confusionMatrix(factor(pml_val_rp,            levels = pml_levels
                                factor(pml_validation$classe, levels = pml_levels))$overall['Accuracy']
 fancyRpartPlot(pml_model_rp$finalModel)
 ```
-![Rplot18.png](Rplot18.png)
+![Rplot18](https://github.com/i544c/Practical_Machine_Learning_Course_Project/assets/104391905/4dec8f0c-334e-4f98-a13c-9355f9ae5659)
+
 
 **Predicting with Random Forests**
 
